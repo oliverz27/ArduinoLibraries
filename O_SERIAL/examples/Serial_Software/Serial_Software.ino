@@ -6,7 +6,7 @@
                incoming bytes from Hardware Serial and convert it to character
                array that can be parsed.
   Author: Oliver Padolina
-  Repository: https://github.com/oliverz27/ArduinoLibraries/O_SERIAL
+  Repository: https://github.com/oliverz27/ArduinoLibraries/tree/main/O_SERIAL
   Circuit:
             Connect Arduino Pin 10 -> Other Board TX
             Connect Arduino Pin 11 -> Other Board RX

@@ -9,7 +9,7 @@ This page will be a list of my personal Arduino library codes. Feel free to use 
 - Go to File -> Examples -> Library Name.
 
 ## Libraries
-* [O_SERIAL]() - This library allows Arduino or any other board to receive incoming set of characters, words, or bytes via Serial Communication, and split that data. [v1.0.0]() - Initial Release
+* [O_SERIAL](https://github.com/oliverz27/ArduinoLibraries/blob/main/O_SERIAL/) - This library allows Arduino or any other board to receive incoming set of characters, words, or bytes via Serial Communication, and split that data. [v1.0.0]() - Initial Release
 
 ### Disclaimer:
 Some of the codes were referenced from other people's work,

@@ -6,7 +6,7 @@
                incoming set of characters, words, or bytes via Serial
                Communication, and split that data.
   Author: Oliver Padolina
-  URL: https://github.com/oliverz27/ArduinoLibraries/O_SERIAL
+  URL: https://github.com/oliverz27/ArduinoLibraries/blob/main/O_SERIAL/
   Reference: https://forum.arduino.cc/t/serial-input-basics-updated/382007/2
 
   ----------------------------------------------------------------------------*/
