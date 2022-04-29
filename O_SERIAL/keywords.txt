@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For O_SERIAL
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+O_SERIAL	KEYWORD1	O_SERIAL
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin KEYWORD2
+getData	KEYWORD2
+hasData	KEYWORD2
+contains	KEYWORD2
+sendData	KEYWORD2
+writeData	KEYWORD2
+parseData	KEYWORD2
+listen	KEYWORD2
+receiveData	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
