@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map For O_GSM
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+O_GSM	KEYWORD1	O_GSM
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin KEYWORD2
+init	KEYWORD2
+sendSMS	KEYWORD2
+sendAndWait	KEYWORD2
+readAndWait	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
