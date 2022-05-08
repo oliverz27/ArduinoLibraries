@@ -43,12 +43,21 @@ void O_GSM::begin(const size_t baud)
 bool O_GSM::init()
 {
   if (!sendAndWait("AT\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT Error"));
+#endif
     return false;
   }
-  if (sendAndWait("AT+CCID\r\n", "ERR")) {
+  if (!sendAndWait("AT+CCID\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+CCID Error"));
+#endif
     return false;
   }
-  if (sendAndWait("AT+CREG?\r\n", "ERR")) {
+  if (!sendAndWait("AT+CREG?\r\n", "CREG: 0,1")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+CREG Error"));
+#endif
     return false;
   }
   return true;
@@ -58,7 +67,10 @@ bool O_GSM::init()
   ----------------------------------------------------------------------------*/
 bool O_GSM::sendSMS(const char *number, const char *message)
 {
-  if (sendAndWait("AT+CMGF=1\r\n", "ERR")) {
+  if (!sendAndWait("AT+CMGF=1\r\n", "OK")) {  
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+CMGF Error"));
+#endif
     return false;
   }
 
@@ -68,13 +80,25 @@ bool O_GSM::sendSMS(const char *number, const char *message)
   delay(100);
  
   sendData((char *)message);
-  sendData("\r\n");
-  delay(1000);
-  if (!writeAndWait((const char)26, "CMGS", 60000)) {
+  if (!writeAndWait((const char)26, "+CMGS:", 60000)) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+CMGS Error"));
+#endif
     return false;
   }
   
   return true;
+}
+/*------------------------------------------------------------------------------
+  DELETE ALL SMS
+  ----------------------------------------------------------------------------*/
+void O_GSM::deleteAllSMS()
+{
+  if (!sendAndWait("AT+CMGD=1,4\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+CMGD Error"));
+#endif
+  }
 }
 /*------------------------------------------------------------------------------
   PRIVATE FUNCTIONS

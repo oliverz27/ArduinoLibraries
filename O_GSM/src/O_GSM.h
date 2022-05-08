@@ -31,6 +31,7 @@ class O_GSM : public O_SERIAL
     void begin(const size_t baud);
     bool init();
     bool sendSMS(const char *number, const char *message);
+    void deleteAllSMS();
     
   private:
     unsigned long _startTime = 0;

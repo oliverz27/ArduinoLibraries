@@ -45,6 +45,9 @@ void setup() {
   //gsm.begin(9600);    // SIM800L
   gsm.begin(115200);  // SIM900A
 
+  Serial.println(F("GSM: Initializing..."));
+  delay(10000);
+
   if (!gsm.init()) {
     Serial.println(F("GSM: NO SIM"));
   }
@@ -52,12 +55,16 @@ void setup() {
   if (!gsm.sendSMS(number, "Test")) {
     Serial.println(F("GSM: NO SIM or NO BALANCE"));
   }
+  gsm.deleteAllSMS();
 
-  Serial.println("Loop start");
+  Serial.println(F("Loop start"));
 }
 /*------------------------------------------------------------------------------
   LOOP
   ----------------------------------------------------------------------------*/
 void loop() {
+  while (Serial.available()) {
+    gsm.writeData(Serial.read());
+  }
   char *gsmData = gsm.getData();
 }
