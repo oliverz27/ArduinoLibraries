@@ -48,18 +48,29 @@ bool O_GSM::init()
 #endif
     return false;
   }
+  delay(100);
+
   if (!sendAndWait("AT+CCID\r\n", "OK")) {
 #ifdef O_GSM_DEBUG
     Serial.println(F("GSM: AT+CCID Error"));
 #endif
     return false;
   }
+  delay(100);
+
   if (!sendAndWait("AT+CREG?\r\n", "CREG: 0,1")) {
 #ifdef O_GSM_DEBUG
     Serial.println(F("GSM: AT+CREG Error"));
 #endif
+    delay(100);
+    wait("OK", O_GSM_TIMEOUT);
+    delay(100);
     return false;
   }
+  delay(100);
+  wait("OK", O_GSM_TIMEOUT);
+  delay(100);
+
   return true;
 }
 /*------------------------------------------------------------------------------
@@ -73,6 +84,7 @@ bool O_GSM::sendSMS(const char *number, const char *message)
 #endif
     return false;
   }
+  delay(100);
 
   sendData("AT+CMGS=\"");
   sendData((char *)number);
@@ -84,9 +96,15 @@ bool O_GSM::sendSMS(const char *number, const char *message)
 #ifdef O_GSM_DEBUG
     Serial.println(F("GSM: AT+CMGS Error"));
 #endif
+    delay(100);
+    wait("OK", O_GSM_TIMEOUT);
+    delay(100);
     return false;
   }
-  
+  delay(100);
+  wait("OK", O_GSM_TIMEOUT);
+  delay(100);
+
   return true;
 }
 /*------------------------------------------------------------------------------
@@ -99,6 +117,129 @@ void O_GSM::deleteAllSMS()
     Serial.println(F("GSM: AT+CMGD Error"));
 #endif
   }
+  delay(100);
+}
+/*------------------------------------------------------------------------------
+  INIT GPRS
+  ----------------------------------------------------------------------------*/
+bool O_GSM::initGPRS(const char* apn)
+{
+  if (!sendAndWait("AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+SAPBR=3,1 Error"));
+#endif
+    return false;
+  }
+  delay(100);
+
+  sendData("AT+SAPBR=3,1,\"APN\",\"");
+  sendData((char *)apn);
+  sendData("\"\r\n");
+  if (!wait("OK", O_GSM_TIMEOUT)) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+SAPBR=3,1 APN Error"));
+#endif
+    return false;
+  }
+  delay(100);
+
+  return true;
+}
+/*------------------------------------------------------------------------------
+  CHECK GPRS
+  ----------------------------------------------------------------------------*/
+bool O_GSM::checkGPRS()
+{   
+  if (sendAndWait("AT+SAPBR=2,1\r\n", "0.0.0.0")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: GPRS is Off"));
+#endif
+    delay(100);
+    wait("OK", 1000);
+    delay(100);
+    return false;
+  }
+  delay(100);
+  wait("OK", 1000);
+  delay(100);
+
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: GPRS is On"));
+#endif
+
+  return true;
+}
+/*------------------------------------------------------------------------------
+  TURN ON GPRS
+  ----------------------------------------------------------------------------*/
+void O_GSM::turnOnGPRS()
+{
+  sendAndWait("AT+SAPBR=1,1\r\n", "OK");
+  delay(100);
+}
+/*------------------------------------------------------------------------------
+  TURN OFF GPRS
+  ----------------------------------------------------------------------------*/
+void O_GSM::turnOffGPRS()
+{
+  sendAndWait("AT+SAPBR=0,1\r\n", "OK");
+  delay(100);
+}
+/*------------------------------------------------------------------------------
+  SEND DATA
+  ----------------------------------------------------------------------------*/
+bool O_GSM::httpSendData(const char* url)
+{
+  sendAndWait("AT+HTTPTERM\r\n", "OK");
+  delay(100);
+
+  if (!sendAndWait("AT+HTTPINIT\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+HTTPINIT Error"));
+#endif
+    return false;
+  }
+  delay(100);
+
+  if (!sendAndWait("AT+HTTPPARA=\"CID\",1\r\n", "OK")) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+HTTPPARA=CID,1 Error"));
+#endif
+    return false;
+  }
+  delay(100);
+
+  sendData("AT+HTTPPARA=\"URL\",\"");
+  sendData((char *)url);
+  sendData("\"\r\n");
+  delay(100);
+  readAndWait();
+
+  if (!sendAndWait("AT+HTTPACTION=0\r\n", "200", 20000)) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+HTTPACTION=0 Error"));
+#endif
+    return false;
+  }
+  delay(100);
+
+  return true;
+}
+
+bool O_GSM::httpReadData()
+{
+  if (!sendAndWait("AT+HTTPREAD\r\n", "+HTTPREAD:", 20000)) {
+#ifdef O_GSM_DEBUG
+    Serial.println(F("GSM: AT+HTTPREAD Error"));
+#endif
+    return false;
+  }
+  return true;
+}
+void O_GSM::httpTerminate()
+{
+  sendAndWait("AT+HTTPTERM\r\n", "OK");
+  delay(100);
 }
 /*------------------------------------------------------------------------------
   PRIVATE FUNCTIONS
@@ -144,7 +285,7 @@ bool O_GSM::wait(const char *responseTag,
   _startTime = millis();
   while (millis() - _startTime < timeout) {
     char *response = getData();
-    if (response) {
+    if (strlen(response) > 0) {
       if (contains(responseTag)) {
         delay(100);
         return true;

@@ -12,11 +12,18 @@ O_GSM	KEYWORD1	O_GSM
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin KEYWORD2
-init	KEYWORD2
-sendSMS	KEYWORD2
-sendAndWait	KEYWORD2
-readAndWait	KEYWORD2
+begin 			KEYWORD2
+init 			KEYWORD2
+sendSMS			KEYWORD2
+initGPRS		KEYWORD2
+checkGPRS		KEYWORD2
+turnOnGPRS		KEYWORD2
+turnOffGPRS		KEYWORD2
+httpSendData	KEYWORD2
+httpReadData	KEYWORD2
+httpTerminate	KEYWORD2
+sendAndWait		KEYWORD2
+readAndWait		KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -32,6 +32,13 @@ class O_GSM : public O_SERIAL
     bool init();
     bool sendSMS(const char *number, const char *message);
     void deleteAllSMS();
+    bool initGPRS(const char* apn);
+    bool checkGPRS();
+    void turnOnGPRS();
+    void turnOffGPRS();
+    bool httpSendData(const char* url);
+    bool httpReadData();
+    void httpTerminate();
     
   private:
     unsigned long _startTime = 0;
